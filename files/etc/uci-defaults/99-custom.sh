@@ -264,4 +264,40 @@ else
     echo "OpenClash default configuration not found, skipping." >>"$LOGFILE"
 fi
 
+# 安装 Aurora 默认配置和图标
+AURORA_CUSTOM_DIR="/etc/config/aurora_custom"
+AURORA_DEFAULT="$AURORA_CUSTOM_DIR/aurora.default"
+AURORA_IMAGE_DIR="/www/luci-static/aurora/images"
+
+# 安装 Aurora 配置
+if [ -f "$AURORA_DEFAULT" ]; then
+    cp "$AURORA_DEFAULT" /etc/config/aurora
+    rm -f "$AURORA_DEFAULT"
+    echo "Aurora default configuration installed." >>"$LOGFILE"
+else
+    echo "Aurora default configuration not found, skipping." >>"$LOGFILE"
+fi
+
+# 安装 Aurora 图标
+if [ -f "$AURORA_CUSTOM_DIR/openclash.png" ] || [ -f "$AURORA_CUSTOM_DIR/nikki.png" ]; then
+    mkdir -p "$AURORA_IMAGE_DIR"
+
+    if [ -f "$AURORA_CUSTOM_DIR/openclash.png" ]; then
+        cp "$AURORA_CUSTOM_DIR/openclash.png" "$AURORA_IMAGE_DIR/openclash.png"
+        rm -f "$AURORA_CUSTOM_DIR/openclash.png"
+    fi
+
+    if [ -f "$AURORA_CUSTOM_DIR/nikki.png" ]; then
+        cp "$AURORA_CUSTOM_DIR/nikki.png" "$AURORA_IMAGE_DIR/nikki.png"
+        rm -f "$AURORA_CUSTOM_DIR/nikki.png"
+    fi
+
+    echo "Aurora icons installed." >>"$LOGFILE"
+else
+    echo "Aurora icons not found, skipping." >>"$LOGFILE"
+fi
+
+# 清理 Aurora 暂存目录
+rmdir "$AURORA_CUSTOM_DIR" 2>/dev/null
+
 exit 0
