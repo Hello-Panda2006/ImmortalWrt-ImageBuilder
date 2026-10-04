@@ -256,9 +256,8 @@ echo "Installed Intel NIC Runtime PM service." >>"$LOGFILE"
 OPENCLASH_DEFAULT="/etc/config/openclash/openclash"
 
 if [ -f "$OPENCLASH_DEFAULT" ]; then
-    cp "$OPENCLASH_DEFAULT" /etc/config/openclash.tmp
     rm -rf /etc/config/openclash
-    mv /etc/config/openclash.tmp /etc/config/openclash
+    cp "$OPENCLASH_DEFAULT" /etc/config/openclash
     echo "OpenClash default configuration installed." >>"$LOGFILE"
 else
     echo "OpenClash default configuration not found, skipping." >>"$LOGFILE"
