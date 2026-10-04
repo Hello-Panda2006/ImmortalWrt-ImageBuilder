@@ -216,4 +216,40 @@ else
     echo "未检测到 Docker，跳过防火墙配置。"
 fi
 
+# 创建 Intel NIC Runtime PM 开机服务
+cat > /etc/init.d/intel-runtime-pm << 'EOF'
+#!/bin/sh /etc/rc.common
+
+START=20
+USE_PROCD=0
+
+start() {
+    for dev in /sys/class/net/*; do
+
+        # 只处理真实 PCI 网卡
+        [ -L "$dev/device" ] || continue
+
+        # 必须支持 Runtime PM 控制
+        [ -e "$dev/device/power/control" ] || continue
+
+        # 只处理 Intel 网卡
+        VENDOR=$(cat "$dev/device/vendor" 2>/dev/null)
+        [ "$VENDOR" = "0x8086" ] || continue
+
+        echo on > "$dev/device/power/control"
+
+    done
+}
+EOF
+
+chmod +x /etc/init.d/intel-runtime-pm
+
+# 设置开机自动执行
+/etc/init.d/intel-runtime-pm enable >/dev/null 2>&1
+
+# 当前首次启动立即执行
+/etc/init.d/intel-runtime-pm start >/dev/null 2>&1
+
+echo "Installed Intel NIC Runtime PM service." >>"$LOGFILE"
+
 exit 0
