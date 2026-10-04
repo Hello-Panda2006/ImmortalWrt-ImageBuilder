@@ -253,11 +253,12 @@ chmod +x /etc/init.d/intel-runtime-pm
 echo "Installed Intel NIC Runtime PM service." >>"$LOGFILE"
 
 # 安装 OpenClash 默认配置
-OPENCLASH_DEFAULT="/etc/config/openclash/openclash"
+OPENCLASH_DEFAULT="/etc/config/openclash_custom/openclash.default"
 
 if [ -f "$OPENCLASH_DEFAULT" ]; then
-    rm -rf /etc/config/openclash
     cp "$OPENCLASH_DEFAULT" /etc/config/openclash
+    rm -f "$OPENCLASH_DEFAULT"
+    rmdir /etc/config/openclash_custom 2>/dev/null
     echo "OpenClash default configuration installed." >>"$LOGFILE"
 else
     echo "OpenClash default configuration not found, skipping." >>"$LOGFILE"
